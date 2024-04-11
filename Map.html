@@ -1,43 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>D3: Setting path fills</title>
-        <script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
-        <style type="text/css">
-            /* No style rules here yet */       
-        </style>
-    </head>
-    <body>
-        <script type="text/javascript">
-            //Width and height
-            var w = 500;
-            var h = 300;
-            //Define map projection
-            var projection = d3.geo.albersUsa()
-                                   .translate([w/2, h/2])
-                                   .scale([500]);
-            //Define path generator
-            var path = d3.geo.path()
-                             .projection(projection);
-            //Create SVG element
-            var svg = d3.select("body")
-                        .append("svg")
-                        .attr("width", w)
-                        .attr("height", h);
-            //Load in GeoJSON data
-            d3.json("us-states.json", function(json) {
+<head>
+    <meta charset="utf-8">
+    <title>D3: Interactive US States Map</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+        /* No style rules here yet */       
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        //Width and height
+        var w = 960;
+        var h = 600;
 
-                //Bind data and create one path per GeoJSON feature
-                svg.selectAll("path")
-                   .data(json.features)
-                   .enter()
-                   .append("path")
-                   .attr("d", path)
-                   .style("fill", "steelblue");
+        //Define map projection
+        var projection = d3.geo.albersUsa()
+                               .translate([w/2, h/2])
+                               .scale([1000]);
 
-            });
+        //Define path generator
+        var path = d3.geo.path()
+                         .projection(projection);
 
-        </script>
-    </body>
+        //Create SVG element
+        var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+        //Load in GeoJSON data
+        d3.json("us-states.json", function(json) {
+
+            //Bind data and create one path per GeoJSON feature
+            svg.selectAll("path")
+               .data(json.features)
+               .enter()
+               .append("path")
+               .attr("d", path)
+               .style("fill", "steelblue")
+               // Add mouseover event
+               .on("mouseover", function(d) {
+                   d3.select(this).style("fill", "orange");
+               })
+               .on("mouseout", function(d) {
+                   d3.select(this).style("fill", "steelblue");
+               })
+               // Add click event
+               .on("click", function(d) {
+                   alert("State: " + d.properties.name);
+               });
+
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>D3: Interactive US States Map</title>
+    <script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+    <style type="text/css">
+        /* No style rules here yet */       
+    </style>
+</head>
+<body>
+    <script type="text/javascript">
+        //Width and height
+        var w = 1400;
+        var h = 1400;
+
+        //Define map projection
+        var projection = d3.geoAlbersUsa()
+                               .translate([w/2, h/2])
+                               .scale(1000)
+                               .center([-86.5, 35.8]);
+
+        //Define path generator
+        var path = d3.geo.path()
+                         .projection(projection);
+
+        //Create SVG element
+        var svg = d3.select("body")
+                    .append("svg")
+                    .attr("width", w)
+                    .attr("height", h);
+
+        //Load in GeoJSON data
+        d3.json("us-states.json", function(json) {
+
+            //Bind data and create one path per GeoJSON feature
+            svg.selectAll("path")
+               .data(json.features)
+               .enter()
+               .append("path")
+               .attr("d", path)
+               .style("fill", "steelblue")
+               // Add mouseover event
+               .on("mouseover", function(d) {
+                   d3.select(this).style("fill", "orange");
+               })
+               .on("mouseout", function(d) {
+                   d3.select(this).style("fill", "steelblue");
+               })
+               // Add click event
+               .on("click", function(d) {
+                   alert("State: " + d.properties.name);
+               });
+
+        });
+    </script>
+</body>
 </html>
