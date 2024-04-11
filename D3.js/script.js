@@ -1,3 +1,4 @@
+
 // Set up SVG dimensions and margins
 const margin = { top: 60, right: 100, bottom: 150, left: 100 };
 const width = innerWidth - margin.left - margin.right;
@@ -73,3 +74,5 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
 
     //transition
 });
+
+
