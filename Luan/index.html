@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Visualization</title>
+    <style src="styles.css">
+        /* Hide all pages by default */
+        .page {
+            display: none;
+        }
+
+        /* Show active page */
+        .active {
+            display: block;
+        }
+    </style>
+    <script src="../d3.v7.min.js"></script>
+
+</head>
+
+<body>
+    <!-- Home Page -->
+    <div id="home" class="page active">
+        <h1>Welcome to the Home Page</h1>
+        <ul>
+            <li><button onclick="showPage('page1')">Question 1</button></li>
+            <li><button onclick="showPage('page2')">Question 2</button></li>
+            <!-- Add buttons for other pages -->
+            <!-- Example: <li><button onclick="showPage('page3')">Page 3</button></li> -->
+        </ul>
+    </div>
+
+    <!-- Page 1 -->
+    <div id="page1" class="page">
+        <button onclick="showPage('home')">Back to Home</button>
+        <div id="chart1"></div>
+        <script src="Q1.js"></script>
+
+    </div>
+
+    <!-- Page 2 -->
+    <div id="page2" class="page">
+        <button onclick="showPage('home')">Back to Home</button>
+        <div id="chart2"></div>
+        <script src="Q2.js"></script>
+    </div>
+
+
+    <script>
+        function showPage(pageId) {
+            // Hide all pages
+            var pages = document.querySelectorAll('.page');
+            pages.forEach(function (page) {
+                page.classList.remove('active');
+            });
+
+            // Show the selected page
+            var selectedPage = document.getElementById(pageId);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
