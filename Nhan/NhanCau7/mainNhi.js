@@ -1,5 +1,4 @@
 d3.csv("Traffic_Accidents.csv").then(function(data) {
-  // Parse dates and extract years
   var parseDate = d3.timeParse("%m/%d/%Y %H:%M");
   data.forEach(function(d) {
     var date = parseDate(d["Date and Time"]);
@@ -7,13 +6,10 @@ d3.csv("Traffic_Accidents.csv").then(function(data) {
     d.year = date ? date.getFullYear() : null;
   });
 
-  // Filter out entries with null dates and "Hit and Run" collisions
   var hitAndRunData = data.filter(d => d.date !== null && d["Hit and Run"] === "TRUE");
 
-  // Group hitAndRunData by year
   var nestedHitAndRunData = d3.group(hitAndRunData, d => d.year);
 
-  // Convert nested hitAndRunData to flat data
   var flatHitAndRunData = Array.from(nestedHitAndRunData, ([year, entries]) => {
     var cityData = { year: year };
     entries.forEach(d => {
@@ -23,13 +19,10 @@ d3.csv("Traffic_Accidents.csv").then(function(data) {
     return cityData;
   });
 
-  // Filter out entries with null dates and count "Number of Injuries"
   var injuriesData = data.filter(d => d.date !== null && !isNaN(d["Number of Injuries"]));
 
-  // Group injuriesData by year
   var nestedInjuriesData = d3.group(injuriesData, d => d.year);
 
-  // Convert nested injuriesData to flat data
   var flatInjuriesData = Array.from(nestedInjuriesData, ([year, entries]) => {
     return {
       year: year,
@@ -70,7 +63,6 @@ d3.csv("Traffic_Accidents.csv").then(function(data) {
     .nice()
     .range([height, 0]);
 
-  // Draw bars for Hit and Run data
   svg.selectAll(".bar")
     .data(flatHitAndRunData)
     .enter().append("rect")
