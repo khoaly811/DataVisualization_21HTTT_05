@@ -1,0 +1,20 @@
+.titleWrapper {
+  text-align: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color:red;
+}
+.tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #000000;
+  padding: 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
