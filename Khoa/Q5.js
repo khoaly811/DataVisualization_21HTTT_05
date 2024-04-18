@@ -1,5 +1,5 @@
 // Define constants
-const duration = 1000; // Changed to 3 seconds
+const duration = 1500; // Changed to 3 seconds
 const barSize = 48;
 const marginTop = 16;
 const widthQ5 = 800; // Define the width of the SVG
@@ -30,18 +30,21 @@ d3.csv('Traffic_Accidents.csv').then(data => {
     d.PrecinctName = d.Precinct;
   });
 
-  // Group data by Precinct and Year and count the number of accidents
-  const groupedData = d3.rollup(data, v => v.length, d => d.PrecinctName, d => d.Year);
+  // Filter data for the year 2015
+  const data2015 = data.filter(d => d.Year === 2015);
+
+  // Group data by Precinct and count the number of accidents in 2015
+  const groupedData2015 = d3.rollup(data2015, v => v.length, d => d.PrecinctName);
 
   // Convert grouped data to array of objects
-  const nestedData = Array.from(groupedData, ([key, value]) => ({ Precinct: key, Years: Array.from(value.entries()) }));
+  const nestedData2015 = Array.from(groupedData2015, ([key, value]) => ({ Precinct: key, Accidents: value }));
 
   // Sort nestedData by total accidents in each precinct
-  nestedData.sort((a, b) => d3.sum(b.Years, d => d[1]) - d3.sum(a.Years, d => d[1]));
+  nestedData2015.sort((a, b) => b.Accidents - a.Accidents);
 
   // Define scales
   const xScale = d3.scaleLinear()
-    .domain([0, d3.max(nestedData, d => d3.max(d.Years, d => d[1]))])
+    .domain([0, d3.max(nestedData2015, d => d.Accidents)])
     .range([0, widthQ5 - 150]);
 
   const yScale = d3.scaleBand()
@@ -51,7 +54,7 @@ d3.csv('Traffic_Accidents.csv').then(data => {
 
   // Define initial bars
   let bars = svgQ5.selectAll(".bar")
-    .data(nestedData[0].Years)
+    .data(nestedData2015)
     .enter()
     .append("g")
     .attr("class", "bar")
@@ -60,36 +63,48 @@ d3.csv('Traffic_Accidents.csv').then(data => {
   bars.append("rect")
     .attr("y", 0)
     .attr("height", yScale.bandwidth())
-    .attr("width", d => xScale(d[1]))
+    .attr("width", d => xScale(d.Accidents))
     .attr("fill", "steelblue");
 
   bars.append("text")
     .attr("class", "label")
-    .attr("x", d => xScale(d[1]) + 10)
+    .attr("x", d => xScale(d.Accidents) + 10)
     .attr("y", yScale.bandwidth() / 2)
     .attr("dy", "0.35em")
-    .attr("fill", "white")
-    .text(d => `${d[0]}: ${d[1]}`);
+    .attr("fill", "black") // Set text color to black
+    .text(d => `${d.Precinct}: ${d.Accidents}`);
 
   // Define function to update bars and labels
   function update(yearIndex) {
     // Update year display
-    yearDisplay.text(nestedData[yearIndex].Years[0][0]);
+    yearDisplay.text(`Year: ${2016 + yearIndex}`);
+
+    // Filter data for the corresponding year
+    const dataYear = data.filter(d => d.Year === 2016 + yearIndex);
+
+    // Group data by Precinct and count the number of accidents
+    const groupedDataYear = d3.rollup(dataYear, v => v.length, d => d.PrecinctName);
+
+    // Convert grouped data to array of objects
+    const nestedDataYear = Array.from(groupedDataYear, ([key, value]) => ({ Precinct: key, Accidents: value }));
+
+    // Sort nestedData by total accidents in each precinct
+    nestedDataYear.sort((a, b) => b.Accidents - a.Accidents);
 
     // Update bars
-    bars.data(nestedData[yearIndex].Years)
+    bars.data(nestedDataYear)
       .select("rect")
       .transition()
       .duration(duration)
-      .attr("width", d => xScale(d[1]));
+      .attr("width", d => xScale(d.Accidents));
 
     // Update labels
-    bars.data(nestedData[yearIndex].Years)
+    bars.data(nestedDataYear)
       .select(".label")
       .transition()
       .duration(duration)
-      .attr("x", d => xScale(d[1]) + 10)
-      .text(d => `${d[0]}: ${d[1]}`);
+      .attr("x", d => xScale(d.Accidents) + 10)
+      .text(d => `${d.Precinct}: ${d.Accidents}`);
   }
 
   // Initialize race
@@ -99,7 +114,7 @@ d3.csv('Traffic_Accidents.csv').then(data => {
   // Define function to start race
   function startRace() {
     d3.interval(() => {
-      yearIndex = (yearIndex + 1) % nestedData.length;
+      yearIndex = (yearIndex + 1) % (new Date().getFullYear() - 2016);
       update(yearIndex);
     }, duration);
   }
