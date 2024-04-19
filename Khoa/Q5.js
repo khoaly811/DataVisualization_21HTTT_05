@@ -1,8 +1,8 @@
 // Define constants
 const duration = 1000; // Changed to 3 seconds
 const barSize = 48;
-const marginTop = 30;
-const marginRight = 150;
+const marginTopQ5 = 30;
+const marginRightQ5 = 150;
 const widthQ5 = 800; // Define the width of the SVG
 const heightQ5 = 600; // Define the height of the SVG
 const n = 8; // Number of precincts
@@ -89,18 +89,19 @@ function loadDataAndInitializeRace() {
     nestedData2015.sort((a, b) => b.Accidents - a.Accidents);
     const colorScale = d3
       .scaleOrdinal(d3.schemeCategory10)
-      .domain(nestedData2015.map((d) => d.Precinct));
+      .domain(nestedData2015.map((d) => d.Precinct))
+      .range(d3.schemeCategory10.map(color => d3.color(color).brighter(0.8)));
     // Define scales
 
     xScale = d3
       .scaleLinear()
       .domain([0, d3.max(nestedData2015, (d) => d.Accidents)])
-      .range([0, widthQ5 - marginRight - 250]);
+      .range([0, widthQ5 - marginRightQ5 - 250]);
 
     yScale = d3
       .scaleBand()
       .domain(d3.range(n))
-      .range([marginTop + 40, heightQ5 - marginTop])
+      .range([marginTopQ5 + 40, heightQ5 - marginTopQ5])
       .padding(0.3);
     const xAxis = d3.axisBottom(xScale).ticks(5).tickSizeOuter(0);
     const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(30);
@@ -115,8 +116,8 @@ function loadDataAndInitializeRace() {
     yearDisplay = svgQ5
       .append("text")
       .attr("class", "year-display")
-      .attr("x", (widthQ5 - marginRight) / 2)
-      .attr("y", marginTop)
+      .attr("x", (widthQ5 - marginRightQ5) / 2)
+      .attr("y", marginTopQ5)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "hanging")
       .attr("font-size", "24px")
@@ -128,7 +129,7 @@ function loadDataAndInitializeRace() {
       .enter()
       .append("g")
       .attr("class", "bar")
-      .attr("transform", (d, i) => `translate(${marginTop},${yScale(i)})`);
+      .attr("transform", (d, i) => `translate(${marginTopQ5},${yScale(i)})`);
 
     bars
       .append("rect")
@@ -143,7 +144,7 @@ function loadDataAndInitializeRace() {
       .attr("x", (d) => xScale(d.Accidents) + 10)
       .attr("y", yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
-      .attr("fill", "darkgrey") // Set text color to black
+      .attr("fill", "#544F4E") // Set text color to black
       .text((d) => `${d.Precinct}: ${d.Accidents}`);
 
     svgQ5
@@ -152,28 +153,28 @@ function loadDataAndInitializeRace() {
       .enter()
       .append("line")
       .attr("class", "vertical-grid")
-      .attr("x1", (d) => xScale(d) + marginTop) // Adjust x-position by adding marginTop
-      .attr("y1", marginTop + 40)
-      .attr("x2", (d) => xScale(d) + marginTop) // Adjust x-position by adding marginTop
-      .attr("y2", heightQ5 - marginTop)
+      .attr("x1", (d) => xScale(d) + marginTopQ5) // Adjust x-position by adding marginTop
+      .attr("y1", marginTopQ5 + 40)
+      .attr("x2", (d) => xScale(d) + marginTopQ5) // Adjust x-position by adding marginTop
+      .attr("y2", heightQ5 - marginTopQ5)
       .style("stroke", "lightgray")
       .style("stroke-width", 0.5)
       .style("stroke-dasharray", "3 3");
     svgQ5
       .append("g")
       .attr("class", "x axis")
-      .attr("transform", `translate(${marginTop}, ${heightQ5 - marginTop})`)
+      .attr("transform", `translate(${marginTopQ5}, ${heightQ5 - marginTopQ5})`)
       .call(xAxis)
       .call((g) => g.select(".domain").remove());
     svgQ5
       .append("g")
       .attr("class", "y-axis")
-      .attr("transform", `translate(${marginTop}, 0)`) // Adjust translation to fit right at the 0 y-axis
+      .attr("transform", `translate(${marginTopQ5}, 0)`) // Adjust translation to fit right at the 0 y-axis
       .call(yAxis)
       .selectAll("path")
       .style("stroke-width", "1.75px")
-      .attr("y1", marginTop) // Adjust y1 to fit right at the 0 y-axis
-      .attr("y2", heightQ5 - marginTop);
+      .attr("y1", marginTopQ5) // Adjust y1 to fit right at the 0 y-axis
+      .attr("y2", heightQ5 - marginTopQ5);
     svgQ5.selectAll(".yAxis.axis .tick text").text(function (d) {
       return d.toUpperCase();
     });
