@@ -99,7 +99,7 @@ d3.csv("Traffic_Accidents.csv")
         console.log(d);
         tooltip.html(
           "Year: " +
-            d.srcElement.__data__.year +
+            d +
             "<br>Hit and Run Accidents: " +
             (d3.sum(Object.values(d.srcElement.__data__)) -
               d.srcElement.__data__.year)
@@ -111,21 +111,28 @@ d3.csv("Traffic_Accidents.csv")
 
     // Draw axes
     svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(
-        d3
-          .axisBottom(x)
-          .ticks(d3.timeMonth.every(3))
-          .tickFormat(d3.timeFormat("%Y-%m"))
-      );
+    .append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(
+      d3
+        .axisBottom(x)
+        .ticks(d3.timeMonth.every(3))
+        .tickFormat(function (date) {
+          if (date.getMonth() === 0) {
+            return d3.timeFormat("%Y")(date);
+          }
+          return d3.timeFormat("%m")(date);
+        })
+    ).attr("font-size", "13px")  // Set font size
+    .attr("font-weight", "400"); // Set font weight
+  
 
     svg.append("g").call(d3.axisLeft(y));
 
     // Add legend
     var legend = svg
       .selectAll(".legend")
-      .data(z.domain())
+      .data(z.domain().reverse())
       .enter()
       .append("g")
       .attr("class", "legend")
