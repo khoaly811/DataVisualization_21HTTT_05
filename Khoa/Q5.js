@@ -12,6 +12,7 @@ let yearIndex = 0; // Declare yearIndex globally
 let raceInterval; // Declare raceInterval globally
 let yearDisplay; // Declare yearDisplay globally
 let xScale; // Declare xScale globally
+let yScale;
 let bars; // Declare bars globally
 
 // Function to update bars and labels
@@ -94,14 +95,15 @@ function loadDataAndInitializeRace() {
     xScale = d3
       .scaleLinear()
       .domain([0, d3.max(nestedData2015, (d) => d.Accidents)])
-      .range([0, widthQ5 - marginRight - 200]);
+      .range([0, widthQ5 - marginRight - 250]);
 
-    const yScale = d3
+    yScale = d3
       .scaleBand()
       .domain(d3.range(n))
       .range([marginTop + 40, heightQ5 - marginTop])
-      .padding(0.1);
-
+      .padding(0.3);
+    const xAxis = d3.axisBottom(xScale).ticks(5).tickSizeOuter(0);
+    const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(30);
     // Create SVG
     const svgQ5 = d3
       .select("#chart5")
@@ -141,28 +143,40 @@ function loadDataAndInitializeRace() {
       .attr("x", (d) => xScale(d.Accidents) + 10)
       .attr("y", yScale.bandwidth() / 2)
       .attr("dy", "0.35em")
-      .attr("fill", "black") // Set text color to black
+      .attr("fill", "darkgrey") // Set text color to black
       .text((d) => `${d.Precinct}: ${d.Accidents}`);
 
     svgQ5
       .selectAll("line.vertical-grid")
-      .data(xScale.ticks())
+      .data(xScale.ticks(5))
       .enter()
       .append("line")
       .attr("class", "vertical-grid")
-      .attr("x1", (d) => xScale(d))
+      .attr("x1", (d) => xScale(d) + marginTop) // Adjust x-position by adding marginTop
       .attr("y1", marginTop + 40)
-      .attr("x2", (d) => xScale(d))
+      .attr("x2", (d) => xScale(d) + marginTop) // Adjust x-position by adding marginTop
       .attr("y2", heightQ5 - marginTop)
       .style("stroke", "lightgray")
       .style("stroke-width", 0.5)
       .style("stroke-dasharray", "3 3");
     svgQ5
       .append("g")
-      .attr("class", "grid")
+      .attr("class", "x axis")
       .attr("transform", `translate(${marginTop}, ${heightQ5 - marginTop})`)
-      .call(xAxis);
-    // Initialize race
+      .call(xAxis)
+      .call((g) => g.select(".domain").remove());
+    svgQ5
+      .append("g")
+      .attr("class", "y-axis")
+      .attr("transform", `translate(${marginTop}, 0)`) // Adjust translation to fit right at the 0 y-axis
+      .call(yAxis)
+      .selectAll("path")
+      .style("stroke-width", "1.75px")
+      .attr("y1", marginTop) // Adjust y1 to fit right at the 0 y-axis
+      .attr("y2", heightQ5 - marginTop);
+    svgQ5.selectAll(".yAxis.axis .tick text").text(function (d) {
+      return d.toUpperCase();
+    });
     update(0);
 
     // Start race
