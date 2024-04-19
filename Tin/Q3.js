@@ -54,14 +54,14 @@ d3.csv("Traffic_Accidents.csv").then(function(data) {
 
     // Add labels
     svgQ3.append("g")
-        .attr("transform", translate(0, ${heightQ3 - marginQ3.bottom}))
+        .attr("transform", `translate(0, ${heightQ3 - marginQ3.bottom})`)
         .call(d3.axisBottom(xScale))
         .selectAll("text")
         .attr("transform", "rotate(-45)")
         .style("text-anchor", "end");
 
     svgQ3.append("g")
-        .attr("transform", translate(${marginQ3.left}, 0))
+        .attr("transform", `translate(${marginQ3.left}, 0)`)
         .call(d3.axisLeft(yScale));
 
     // Add axis titles
