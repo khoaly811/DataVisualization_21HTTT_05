@@ -1,5 +1,5 @@
-const widthQ2 = 800;
-const heightQ2 = 600;
+const widthQ2 = innerWidth - 100;
+const heightQ2 = innerHeight - 100;
 const radius = Math.min(widthQ2, heightQ2) / 2;
 
 d3.csv("Traffic_Accidents.csv").then(function (data) {
@@ -48,6 +48,19 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
         .style("stroke", "white")
         .style("stroke-width", 2);
 
+    // Add percentage labels
+    g.append("text")
+        .attr("transform", function (d) {
+            const centroid = arc.centroid(d);
+            return "translate(" + centroid[0] + "," + centroid[1] + ")";
+        })
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .style("fill", "white")
+        .text(function (d) {
+            return ((d.endAngle - d.startAngle) / (2 * Math.PI) * 100).toFixed(1) + "%";
+        });
+
     // Add chart title
     svg.append("text")
         .attr("x", 0)
@@ -61,18 +74,18 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
         .data(visualizeData)
         .enter().append("g")
         .attr("class", "legend")
-        .attr("transform", (d, i) => `translate(${widthQ2 / 2 + 150},${i * 20 - heightQ2 / 2 + 50})`);
+        .attr("transform", (d, i) => `translate(${widthQ2 / 3},${i * 70 - heightQ2 / 2 + 100})`);
 
     legend.append("rect")
         .attr("x", -18)
-        .attr("width", 18)
-        .attr("height", 18)
+        .attr("width", 20)
+        .attr("height", 20)
         .style("fill", d => color(d.illuminationDescription));
 
     legend.append("text")
-        .attr("x", 0)
+        .attr("x", 10)
         .attr("y", 9)
-        .attr("dy", ".35em")
+        .attr("dy", ".35em").attr("font-size", "20px")
         .style("text-anchor", "start")
         .text(d => d.illuminationDescription);
 
