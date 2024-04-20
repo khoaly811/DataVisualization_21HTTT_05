@@ -100,8 +100,8 @@ d3.csv("Traffic_Accidents.csv")
       .data(color.ticks(6).reverse())
       .enter()
       .append("rect")
-      .attr("x", (d, i) => i * 45)  // Adjusted x position
-      .attr("width", 45)  // Adjusted width
+      .attr("x", (d, i) => i * 45) // Adjusted x position
+      .attr("width", 45) // Adjusted width
       .attr("height", 10)
       .attr("fill", color);
 
@@ -110,13 +110,12 @@ d3.csv("Traffic_Accidents.csv")
       .data(color.ticks(6).reverse())
       .enter()
       .append("text")
-      .attr("x", (d, i) => i * 45)  // Adjusted x position
+      .attr("x", (d, i) => i * 45) // Adjusted x position
       .attr("y", 20)
       .attr("dy", "0.32em")
       .attr("text-anchor", "middle")
       .attr("fill", "black")
       .text((d) => d);
-
 
     // Add labels
     svg
@@ -158,7 +157,7 @@ d3.csv("Traffic_Accidents.csv")
       .attr("r", (d) => d)
       .attr("stroke", "black")
       .attr("fill", "none")
-      .data(flatData)
+      .data(flatData);
 
     // Add text labels for the legend
     legendSvg
@@ -166,14 +165,14 @@ d3.csv("Traffic_Accidents.csv")
       .data(sizes)
       .enter()
       .append("text")
-      .attr("x", 50)  // Adjusted x position
+      .attr("x", 50) // Adjusted x position
       .attr("y", (d) => {
         if (d === 5) {
-          return -d + 5;  // Added extra space above the "<100 Accidents" text
+          return -d + 5; // Added extra space above the "<100 Accidents" text
         }
         return -d * 2;
       })
-      .attr("dy", "0.5em")  // Increased line spacing
+      .attr("dy", "0.5em") // Increased line spacing
       .style("text-anchor", "top")
       .text((d) => {
         if (d === 40) {
@@ -193,10 +192,7 @@ d3.csv("Traffic_Accidents.csv")
         }
         return d + " Accidents";
       });
-
   })
   .catch(function (error) {
     console.error("Error loading the data: " + error);
   });
-
-
