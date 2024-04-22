@@ -26,55 +26,59 @@ const data = [
 
 ];
     
-// Kích thước của biểu đồ và margin
-const margin = { top: 20, right: 20, bottom: 30, left: 40 };
-const width = 1240 - margin.left - margin.right;
-const height = 800 - margin.top - margin.bottom;
+ // Kích thước của biểu đồ và margin
+ const margin = { top: 20, right: 20, bottom: 30, left: 50 };
+ const width = 1300 - margin.left - margin.right;
+ const height = 800 - margin.top - margin.bottom;
 
-// Scale cho trục x (giờ)
-const x = d3.scaleBand()
-  .domain(data.map(d => d.hour))
-  .range([margin.left, width - margin.right])
-  .padding(0.1);
+ 
+ // Scale cho trục x (giờ)
+ const x = d3.scaleBand()
+   .domain(data.map(d => d.hour))
+   .range([margin.left/2, width - margin.right])
+   
+ 
+ // Scale cho trục y (số lượng vụ tai nạn)
+ const y = d3.scaleLinear()
+   .domain([0, d3.max(data, d => d.num_of_acci)])
+   .nice()
+   .range([height - margin.bottom, margin.top]);
+ 
+ // Tạo histogram
+ const svgQ9 = d3.select("#chart9")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right) // Adjusted width to include margins
+    .attr("height", height + margin.top + margin.bottom) // Adjusted height to include margins
+    .append("g")
+    .attr("style", "max-width: 1300; height: 800; height: intrinsic;");
+ 
 
-// Scale cho trục y (số lượng vụ tai nạn)
-const y = d3.scaleLinear()
-  .domain([0, d3.max(data, d => d.num_of_acci)])
-  .nice()
-  .range([height - margin.bottom, margin.top]);
-
-// Tạo histogram
-const svgQ9 = d3.select("#chart9")
-  .append("svg")
-  .attr("width", width)
-  .attr("height", height)
-  .attr("viewBox", [0, 0, width, height])
-  .attr("style", "max-width: 100%; height: fixed; height: intrinsic;");
-
-svg.Q9.append("g")
-  .attr("fill", "steelblue")
-  .selectAll()
-  .data(data)
-  .join("rect")
-    .attr("x", d => x(d.hour))
-    .attr("y", d => y(d.num_of_acci))
-    .attr("width", x.bandwidth())
-    .attr("height", d => y(0) - y(d.num_of_acci))
-    .attr("fill", "steelblue");
-
-// Thêm trục x
-svgQ9.append("g")
-  .attr("transform", `translate(0,${height - margin.bottom})`)
-  .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
-  .call((g) => g.append("text")
-        .attr("x", width)
-        .attr("y", margin.bottom - 4)
+ svgQ9.append("g")
+   .attr("fill", "steelblue")
+   .selectAll()
+   .data(data)
+   .join("rect")
+     .attr("x", d => x(d.hour) + margin.left/2 + 3)
+     .attr("y", d => y(d.num_of_acci))
+     .attr("width", x.bandwidth() + 1)
+     .attr("height", d => y(0) - y(d.num_of_acci))
+     .attr("fill", "steelblue");
+ 
+ // Thêm trục x
+ svgQ9.append("g")
+   .attr("transform", `translate(0,${height - margin.bottom})`)
+   .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
+   .call((g) => g.append("text")
+        .attr("x", width + 15)
+        .attr("y", margin.bottom - 12)
         .attr("fill", "currentColor")
         .attr("text-anchor", "end")
-        .text("Hour →"));
-
-// Thêm trục y
-svgQ9.append("g")
+        .text("Hour →"))
+    .selectAll("text") // Increase x-axis label size
+    .attr("font-size", "13px");
+ 
+ // Thêm trục y
+ svgQ9.append("g")
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(height / 40))
     .call((g) => g.append("text")
@@ -82,12 +86,29 @@ svgQ9.append("g")
         .attr("y", 10)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
-        .text("↑ Num of accidents"));
+        .text("↑ Num of accidents"))
+    .selectAll("text") // Increase x-axis label size
+    .attr("font-size", "13px");
 
-// Thêm tiêu đề cho biểu đồ
-svgQ9.append("text")
-  .attr("x", width / 2)
-  .attr("y", 0 - (margin.top / 2))
-  .attr("text-anchor", "middle")
-  .style("font-size", "16px")
-  .text("Hourly Accident Distribution");
+ // Add text to the left of each bar
+ svgQ9.selectAll(".bar-label-left")
+   .data(data)
+   .enter()
+   .append("text")
+   .attr("class", "bar-label-left")
+   .attr("x", d => x(d.hour) + margin.left/2 + 3)
+   .attr("y", d => y(d.num_of_acci) + 14) // Adjust vertical position as needed
+   .text(d => d.hour)
+   .attr("text-anchor", "end")
+   .attr("font-size", "12px")
+   .attr("fill", "black");
+ 
+ 
+ // Thêm tiêu đề cho biểu đồ
+//  svg.append("text")
+//    .attr("x", width / 2)
+//    .attr("y", 0 - (margin.top / 2))
+//    .attr("text-anchor", "middle")
+//    .style("font-size", "16px")
+//    .text("Hourly Accident Distribution");
+
