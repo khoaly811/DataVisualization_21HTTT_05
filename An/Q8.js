@@ -31,17 +31,16 @@ const data = [
   ];
 
 const margin = { top: 20, right: 30, bottom: 50, left: 50 };
-const width = 1240 - margin.left - margin.right;
+const width = 1550 - margin.left - margin.right;
 const height = 800 - margin.top - margin.bottom;
 
 
 const svgQ8 = d3.select("#chart8")
   .append("svg")
-  .attr("width", width)
-  .attr("height", height)
-  .attr("viewBox", [0, 0, width, height])
+  .attr("width", width + margin.left + margin.right) // Adjusted width to include margins
+  .attr("height", height + margin.top + margin.bottom) // Adjusted height to include margins
   .append("g")
-  .attr("style", "max-width: 100%; height: fixed; height: intrinsic;");
+  .attr("style", "max-width: 1550; height: 800; height: intrinsic;");
 
 const x = d3.scaleBand()
   .domain(data.map(d => d.quarter_year))
@@ -84,12 +83,14 @@ svgQ8.append("g")
   .attr("transform", `translate(0,${height - margin.bottom})`)
   .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
   .call(g => g.append("text")
-      .attr("x", margin.right + 1160)
-      .attr("y", 10)
+      .attr("x", margin.right + 1400)
+      .attr("y", 15)
       .attr("fill", "currentColor")
       .attr("text-anchor", "start")
-      .text("Quar-Year"));
-  
+      .text("Quar-Year"))
+  .selectAll("text") // Increase x-axis label size
+  .attr("font-size", "13px");
+
 
 // Add the y-axis, remove the domain line, add grid lines and a label.
 svgQ8.append("g")
@@ -104,7 +105,9 @@ svgQ8.append("g")
       .attr("y", 10)
       .attr("fill", "currentColor")
       .attr("text-anchor", "start")
-      .text("↑ Num of case"));
+      .text("↑ Num of case"))
+  .selectAll("text") // Increase x-axis label size
+  .attr("font-size", "14px");
 
 svgQ8.append("text")
   .attr("x", width - 100)
@@ -119,4 +122,5 @@ svgQ8.append("text")
   .attr("text-anchor", "middle")
   .style("fill", "blue")
   .text("Hit-and-Run");
+
 
