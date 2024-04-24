@@ -12,7 +12,7 @@ d3.csv("Traffic_Accidents.csv")
       data,
       (d) => d.year,
       (d) => Math.floor(d.month / 3),
-      (d) => d["Collision Type Description"]
+      (d) => d["Illumination Description"]
     );
 
     var flatData = [];

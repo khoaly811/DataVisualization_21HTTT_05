@@ -73,13 +73,16 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("height", d => height - y1(d3.sum(Object.values(d)) - d.year))
     .attr("fill", "steelblue")
     .on("mouseover", function (d, event) {
-      var tooltip = d3.select("#tooltip")
-        .style("opacity", 1)
-        .style("left", (event.pageX) + "px")
-        .style("top", (event.pageY - 28) + "px");
+      var [x, y] = d3.pointer(event);
+       var tooltip = d3
+            .select("#tooltip")
+            .style("opacity", 1)
+            .style("left", x + 10 + "px") // Add 10 pixels offset to avoid covering the mouse
+            .style("top", y - 10 + "px"); // Subtract 10 pixels to position above the mouse // Adjust the top position to place the tooltip right below the chart
       console.log(d);
       tooltip.html("Year: " + d.srcElement.__data__.year + "<br>Hit and Run Accidents: " + (d3.sum(Object.values(d.srcElement.__data__)) - d.srcElement.__data__.year));
     })
+    
     .on("mouseout", function () {
       d3.select("#tooltip")
         .style("opacity", 0);

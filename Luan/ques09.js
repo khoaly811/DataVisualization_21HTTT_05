@@ -48,12 +48,17 @@ d3.csv("Traffic_Accidents.csv")
         var cityData = { city: city };
 
         collisionTypes.forEach((count, collisionType) => {
+          console.log(cityData);
           cityData[collisionType] = count.length;
         });
 
         cityData.total = d3.sum(
           Object.values(cityData).filter((d) => typeof d === "number")
         );
+
+        collisionTypes.forEach((count, collisionType) => {
+          cityData[collisionType] = count.length/ cityData.total * 100;
+        });
         flatData.push(cityData);
       });
 
@@ -86,8 +91,8 @@ d3.csv("Traffic_Accidents.csv")
 
       var y = d3
         .scaleLinear()
-        .domain([0, d3.max(flatData, (d) => d.total)])
-        .nice()
+        .domain([0, 100])
+       
         .range([height, 0]);
 
       var z = d3
@@ -142,19 +147,7 @@ d3.csv("Traffic_Accidents.csv")
         });
 
       // Add labels for total accidents
-      svg
-        .selectAll(".total-label")
-        .data(flatData)
-        .enter()
-        .append("text")
-        .attr("class", "total-label")
-        .attr("x", (d) => x(d.city) + x.bandwidth() / 2)
-        .attr("y", (d) => y(d.total) - 5)
-        .attr("text-anchor", "middle")
-        .text((d) => d.total)
-        .attr("font-size", "12px")
-        .attr("fill", "black");
-
+     
       // Draw axes
       svg
         .append("g")
@@ -172,9 +165,9 @@ d3.csv("Traffic_Accidents.csv")
         .attr("class", "legend")
         .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
 
-      legend
+        legend
         .append("rect")
-        .attr("x", width - 18)
+        .attr("x", width + 0)
         .attr("width", 18)
         .attr("height", 18)
         .style("fill", z);
