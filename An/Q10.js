@@ -29,7 +29,7 @@ const data = [
  // Kích thước của biểu đồ và margin
  const margin = { top: 20, right: 20, bottom: 30, left: 50 };
  const width = 1300 - margin.left - margin.right;
- const height = 800 - margin.top - margin.bottom;
+ const height = 750 - margin.top - margin.bottom;
 
  
  // Scale cho trục x (giờ)
