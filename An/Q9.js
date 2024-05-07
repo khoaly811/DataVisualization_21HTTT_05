@@ -40,17 +40,17 @@ const svgQ8 = d3.select("#chart9")
   .attr("width", width + margin.left + margin.right) // Adjusted width to include margins
   .attr("height", height + margin.top + margin.bottom) // Adjusted height to include margins
   .append("g")
-  .attr("style", "max-width: 1560; height: 800; height: intrinsic;");
+  .attr("style", "max-width: 1560; height: 780; height: intrinsic;");
 
 const x = d3.scaleBand()
   .domain(data.map(d => d.quarter_year))
-  .range([margin.left, width - margin.right])
+  .range([margin.left, width])
   .padding(0.6);
 
 const y = d3.scaleLinear()
   .domain([0, d3.max(data, d => Math.max(d.hitAndRun, d.notHitAndRun))])
   .nice()
-  .range([height - margin.bottom, margin.top]);
+  .range([height - margin.bottom, margin.top + 10]);
 
 const lineHitAndRun = d3.line()
   .x(d => x(d.quarter_year) + x.bandwidth() / 2)
@@ -83,7 +83,7 @@ svgQ8.append("g")
   .attr("transform", `translate(0,${height - margin.bottom})`)
   .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
   .call(g => g.append("text")
-      .attr("x", margin.right + 1410)
+      .attr("x", width + 5)
       .attr("y", 15)
       .attr("fill", "currentColor")
       .attr("text-anchor", "start")
