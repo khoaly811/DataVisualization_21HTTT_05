@@ -90,18 +90,6 @@ const data = [
     .selectAll("text") // Increase x-axis label size
     .attr("font-size", "13px");
 
- // Add text to the left of each bar
- svgQ9.selectAll(".bar-label-left")
-   .data(data)
-   .enter()
-   .append("text")
-   .attr("class", "bar-label-left")
-   .attr("x", d => x(d.hour) + margin.left/2 + 3)
-   .attr("y", d => y(d.num_of_acci) + 14) // Adjust vertical position as needed
-   .text(d => d.hour)
-   .attr("text-anchor", "end")
-   .attr("font-size", "12px")
-   .attr("fill", "black");
  
  
  // Thêm tiêu đề cho biểu đồ
