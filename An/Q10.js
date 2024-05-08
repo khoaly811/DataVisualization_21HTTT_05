@@ -23,19 +23,19 @@ const data = [
     {hour: 21, num_of_acci: 5662},
     {hour: 22, num_of_acci: 4804},
     {hour: 23, num_of_acci: 4227},
-
+    {hour: 24, num_of_acci: 0},
 ];
     
  // Kích thước của biểu đồ và margin
  const margin = { top: 20, right: 20, bottom: 30, left: 50 };
- const width = 1300 - margin.left - margin.right;
+ const width = 1400 - margin.left - margin.right;
  const height = 750 - margin.top - margin.bottom;
 
  
  // Scale cho trục x (giờ)
  const x = d3.scaleBand()
    .domain(data.map(d => d.hour))
-   .range([margin.left/2, width - margin.right])
+   .range([margin.left - 10, width - margin.right])
    
  
  // Scale cho trục y (số lượng vụ tai nạn)
@@ -47,10 +47,10 @@ const data = [
  // Tạo histogram
  const svgQ9 = d3.select("#chart10")
     .append("svg")
-    .attr("width", width + margin.left + margin.right) // Adjusted width to include margins
+    .attr("width", width + margin.left + margin.right + 50) // Adjusted width to include margins
     .attr("height", height + margin.top + margin.bottom) // Adjusted height to include margins
     .append("g")
-    .attr("style", "max-width: 1300; height: 800; height: intrinsic;");
+    .attr("style", "max-width: 1400; height: 800; height: intrinsic;");
  
 
  svgQ9.append("g")
@@ -66,7 +66,7 @@ const data = [
  
  // Thêm trục x
  svgQ9.append("g")
-   .attr("transform", `translate(27,${height - margin.bottom})`)
+   .attr("transform", `translate(3,${height - margin.bottom})`)
    .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0))
    .call((g) => g.append("text")
         .attr("x", width + 30)
@@ -76,13 +76,14 @@ const data = [
         .text("Giờ →"))
     .selectAll("text") // Increase x-axis label size
     .attr("font-size", "13px");
- 
+
+
  // Thêm trục y
  svgQ9.append("g")
     .attr("transform", `translate(${margin.left},0)`)
     .call(d3.axisLeft(y).ticks(height / 40))
     .call((g) => g.append("text")
-        .attr("x", -margin.left)
+        .attr("x", -margin.left )
         .attr("y", 13)
         .attr("fill", "currentColor")
         .attr("text-anchor", "start")
