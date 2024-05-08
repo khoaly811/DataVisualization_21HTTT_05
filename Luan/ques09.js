@@ -68,7 +68,7 @@ d3.csv("Traffic_Accidents.csv")
       // Set up dimensions
       var width = 1600;
       var height = 700;
-      var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+      var margin = { top: 250, right: 250, bottom: 30, left: 50 };
 
       // Remove existing SVG if any
       d3.select("#chart9 svg").remove();
@@ -167,18 +167,40 @@ d3.csv("Traffic_Accidents.csv")
 
         legend
         .append("rect")
-        .attr("x", width + 0)
+        .attr("x", function(d, i) {
+          if (i === 10) return;
+          console.log(i); // Skip appending the rectangle if i equals 11
+          return width - 170;
+        })
+        .attr("y", function(d, i) {
+          if (i === 10) return; // Skip appending the rectangle if i equals 11
+          return height - 950;
+        })
         .attr("width", 18)
         .attr("height", 18)
-        .style("fill", z);
-
+        .style("fill", function(d, i) {
+          if (i === 10) return "none"; // Set fill to "none" to make it invisible
+          return z(d);
+        });
+        
+      
       legend
         .append("text")
-        .attr("x", width - 24)
-        .attr("y", 9)
+        .attr("x", function(d, i) {
+          if (i === 10) return; // Skip appending the text if i equals 11
+          return width - 181;
+        })
+        .attr("y", function(d, i) {
+          if (i === 10) return; // Skip appending the text if i equals 11
+          return height - 940;
+        })
         .attr("dy", ".35em")
         .style("text-anchor", "end")
-        .text((d) => d);
+        .text(function(d, i) {
+          if (i === 10) return; // Skip setting text if i equals 11
+          return d;
+        });
+      
 
       // Add tooltip
       d3.select("#chart9")

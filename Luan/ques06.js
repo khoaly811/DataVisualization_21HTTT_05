@@ -56,7 +56,7 @@ d3.csv("Traffic_Accidents.csv")
       .scaleLinear()
       .domain([
         0,
-        d3.max(flatData, (d) => d3.sum(Object.values(d)) - d.year - d.quarter),
+        9000,
       ])
       .nice()
       .range([height, 0]);

@@ -37,7 +37,7 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
   // Set up dimensions
   var width = 1200;
   var height = 500;
-  var margin = { top: 20, right: 20, bottom: 30, left: 50 };
+  var margin = { top: 20, right: 50, bottom: 30, left: 50 };
 
   // Create SVG
   var svg = d3.select("#chart7")
@@ -54,7 +54,7 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .padding(0.1);
 
   var y1 = d3.scaleLinear()
-    .domain([0, d3.max(flatHitAndRunData, d => d3.sum(Object.values(d)) - d.year)])
+    .domain([0, 14000])
     .nice()
     .range([height, 0]);
 
@@ -108,10 +108,14 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .call(d3.axisLeft(y1))
     .attr("class", "axisSteelBlue");
 
-  svg.append("g")
-    .call(d3.axisRight(y2).ticks(null, "s"))
+    svg.append("g")
+    .call(d3.axisRight(y2)
+
+      
+    )
     .attr("class", "axisRed")
     .attr("transform", "translate(" + width + ",0)");
+  
 
   // Add tooltip
   d3.select("#chart")
@@ -138,6 +142,8 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("cy", d => y2(d.injuries))
     .attr("r", 5)
     .attr("fill", "red");
+
+    
 
 }).catch(function (error) {
   console.error("Error loading the data: " + error);
