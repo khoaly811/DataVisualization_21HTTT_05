@@ -1,9 +1,9 @@
 // Load the dataset
 d3.csv("Traffic_Accidents.csv").then(function (data) {
   // Define chart dimensions
-  const width = innerWidth;
-  const height = innerHeight;
-  const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+  const width = innerWidth - 50;
+  const height = innerHeight - 100;
+  const margin = { top: 50, right: 50, bottom: 100, left: 50 };
 
   // Preprocess the data
   const collisionTypes = [
@@ -76,20 +76,22 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .call(d3.axisBottom(xScale))
     .selectAll("text")
     .attr("transform", "rotate(-45)")
-    .style("text-anchor", "end");
+    .style("text-anchor", "end")
+    .style("font-size", "15px");
 
   svgQ3
     .append("g")
     .attr("transform", `translate(${margin.left}, 0)`)
-    .call(d3.axisLeft(yScale));
+    .call(d3.axisLeft(yScale))
+    .style("font-size", "15px");
 
   // Add axis titles
-  svgQ3
-    .append("text")
-    .attr("x", width / 2)
-    .attr("y", margin.top / 2)
-    .style("text-anchor", "middle")
-    .text("Collision Type Description");
+  // svgQ3
+  //   .append("text")
+  //   .attr("x", width / 2)
+  //   .attr("y", margin.top / 2)
+  //   .style("text-anchor", "middle")
+  //   .text("Collision Type Description");
 
   svgQ3
     .append("text")
@@ -98,4 +100,13 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("transform", "rotate(-90)")
     .style("text-anchor", "middle")
     .text("Number of Injuries");
+
+  // Add chart title
+  svgQ3
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", margin.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "20px")
+    .text("So sánh tỉ lệ giữa các điều kiện ánh sáng gây ra tai nạn ");
 });

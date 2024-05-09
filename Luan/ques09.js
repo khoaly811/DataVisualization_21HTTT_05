@@ -1,233 +1,149 @@
-d3.csv("Traffic_Accidents.csv")
-  .then(function (data) {
-    // Parse dates and extract years
-    var parseDate = d3.timeParse("%m/%d/%Y %H:%M");
-    data.forEach(function (d) {
-      var date = parseDate(d["Date and Time"]);
-      d.date = date ? date : null;
-      d.year = date ? date.getFullYear() : null;
-    });
+const dataQues09 = [
+  { quarter_year: "1-15", hitAndRun: 1430, notHitAndRun: 5768 },
+  { quarter_year: "2-15", hitAndRun: 1515, notHitAndRun: 6020 },
+  { quarter_year: "3-15", hitAndRun: 1705, notHitAndRun: 6241 },
+  { quarter_year: "4-15", hitAndRun: 1812, notHitAndRun: 6859 },
+  { quarter_year: "1-16", hitAndRun: 1676, notHitAndRun: 6103 },
+  { quarter_year: "2-16", hitAndRun: 1799, notHitAndRun: 6548 },
+  { quarter_year: "3-16", hitAndRun: 1851, notHitAndRun: 6742 },
+  { quarter_year: "4-16", hitAndRun: 1668, notHitAndRun: 5898 },
+  { quarter_year: "1-17", hitAndRun: 1254, notHitAndRun: 4552 },
+  { quarter_year: "2-17", hitAndRun: 1094, notHitAndRun: 3754 },
+  { quarter_year: "3-17", hitAndRun: 1730, notHitAndRun: 6512 },
+  { quarter_year: "4-17", hitAndRun: 1927, notHitAndRun: 7153 },
+  { quarter_year: "1-18", hitAndRun: 1896, notHitAndRun: 6361 },
+  { quarter_year: "2-18", hitAndRun: 2021, notHitAndRun: 6388 },
+  { quarter_year: "3-18", hitAndRun: 1969, notHitAndRun: 6396 },
+  { quarter_year: "4-18", hitAndRun: 2082, notHitAndRun: 6889 },
+  { quarter_year: "1-19", hitAndRun: 1969, notHitAndRun: 6210 },
+  { quarter_year: "2-19", hitAndRun: 2173, notHitAndRun: 6730 },
+  { quarter_year: "3-19", hitAndRun: 2087, notHitAndRun: 6726 },
+  { quarter_year: "4-19", hitAndRun: 2086, notHitAndRun: 6751 },
+  { quarter_year: "1-20", hitAndRun: 1889, notHitAndRun: 5464 },
+  { quarter_year: "2-20", hitAndRun: 1239, notHitAndRun: 3017 },
+  { quarter_year: "3-20", hitAndRun: 867, notHitAndRun: 3107 },
+  { quarter_year: "4-20", hitAndRun: 397, notHitAndRun: 1625 },
+  { quarter_year: "1-21", hitAndRun: 699, notHitAndRun: 2411 },
+  { quarter_year: "2-21", hitAndRun: 959, notHitAndRun: 3333 },
+  { quarter_year: "3-21", hitAndRun: 940, notHitAndRun: 3504 },
+  { quarter_year: "4-21", hitAndRun: 979, notHitAndRun: 3739 },
+  { quarter_year: "1-22", hitAndRun: 1444, notHitAndRun: 5927 },
+];
 
-    // Filter out entries with null dates
-    data = data.filter((d) => d.date !== null);
+const marginQ9 = { top: 20, right: 30, bottom: 50, left: 50 };
+const widthQ9 = innerWidth - marginQ9.left - marginQ9.right - 100;
+const heightQ9 = innerHeight - marginQ9.top - marginQ9.bottom - 120;
 
-    // Extract unique years for dropdown
-    var years = Array.from(new Set(data.map((d) => d.year)));
+const svgQues09 = d3
+  .select("#chart9")
+  .append("svg")
+  .attr("width", widthQ9 + marginQ9.left + marginQ9.right) // Adjusted widthQ9 to include marginQ9s
+  .attr("height", heightQ9 + marginQ9.top + marginQ9.bottom) // Adjusted height to include marginQ9s
+  .append("g")
+  .attr("style", "max-width: 1560; height: 780; height: intrinsic;");
 
-    // Create dropdown
-    var dropdown = d3
-      .select("#chart9")
-      .append("select")
-      .attr("id", "yearDropdown")
-      .on("change", updateChart);
+const x = d3
+  .scaleBand()
+  .domain(dataQues09.map((d) => d.quarter_year))
+  .range([marginQ9.left, widthQ9])
+  .padding(0.6);
 
-    dropdown
-      .selectAll("option")
-      .data(years)
-      .enter()
-      .append("option")
-      .attr("value", (d) => d)
-      .text((d) => d);
+const y = d3
+  .scaleLinear()
+  .domain([0, d3.max(dataQues09, (d) => Math.max(d.hitAndRun, d.notHitAndRun))])
+  .nice()
+  .range([heightQ9 - marginQ9.bottom, marginQ9.top + 10]);
 
-    function updateChart() {
-      var selectedYear = d3.select("#yearDropdown").property("value");
+const lineHitAndRun = d3
+  .line()
+  .x((d) => x(d.quarter_year) + x.bandwidth() / 2)
+  .y((d) => y(d.hitAndRun));
 
-      // Filter data based on selected year
-      var filteredData = data.filter((d) => d.year == selectedYear);
+const lineNotHitAndRun = d3
+  .line()
+  .x((d) => x(d.quarter_year) + x.bandwidth() / 2)
+  .y((d) => y(d.notHitAndRun));
 
-      // Group data by City
-      var nestedData = d3.group(
-        filteredData,
-        (d) => d["City"],
-        (d) => d["Collision Type Description"]
-      );
+svgQues09
+  .selectAll(".line-hit-and-run")
+  .data([dataQues09])
+  .join("path")
+  .attr("class", "line-hit-and-run")
+  .attr("fill", "none")
+  .attr("stroke", "blue")
+  .attr("stroke-width", 2)
+  .attr("d", lineHitAndRun);
 
-      // Flatten nested data
-      var flatData = [];
-      nestedData.forEach((collisionTypes, city) => {
-        var cityData = { city: city };
+svgQues09
+  .selectAll(".line-not-hit-and-run")
+  .data([dataQues09])
+  .join("path")
+  .attr("class", "line-not-hit-and-run")
+  .attr("fill", "none")
+  .attr("stroke", "green")
+  .attr("stroke-width", 2)
+  .attr("d", lineNotHitAndRun);
 
-        collisionTypes.forEach((count, collisionType) => {
-          console.log(cityData);
-          cityData[collisionType] = count.length;
-        });
+// Append x-axis
+svgQues09
+  .append("g")
+  .attr("transform", `translate(0,${heightQ9 - marginQ9.bottom})`)
+  .call(
+    d3
+      .axisBottom(x)
+      .ticks(widthQ9 / 80)
+      .tickSizeOuter(0)
+  )
+  .call((g) =>
+    g
+      .append("text")
+      .attr("x", widthQ9 + 5)
+      .attr("y", 15)
+      .attr("fill", "currentColor")
+      .attr("text-anchor", "start")
+      .text("Quý-Năm →")
+      .style("font-size", "15px")
+  )
+  .selectAll("text") // Increase x-axis label size
+  .attr("font-size", "15px");
 
-        cityData.total = d3.sum(
-          Object.values(cityData).filter((d) => typeof d === "number")
-        );
+// Add the y-axis, remove the domain line, add grid lines and a label.
+svgQues09
+  .append("g")
+  .attr("transform", `translate(${marginQ9.left},0)`)
+  .call(d3.axisLeft(y).ticks(heightQ9 / 40))
+  .call((g) => g.select(".domain").remove())
+  .call((g) =>
+    g
+      .selectAll(".tick line")
+      .clone()
+      .attr("x2", widthQ9 - marginQ9.left - marginQ9.right)
+      .attr("stroke-opacity", 0.1)
+  )
+  .call((g) =>
+    g
+      .append("text")
+      .attr("x", -marginQ9.left)
+      .attr("y", 15)
+      .attr("fill", "currentColor")
+      .attr("text-anchor", "start")
+      .text("↑ Số lượng trường hợp")
+  )
+  .selectAll("text") // Increase x-axis label size
+  .attr("font-size", "15px");
 
-        collisionTypes.forEach((count, collisionType) => {
-          cityData[collisionType] = count.length/ cityData.total * 100;
-        });
-        flatData.push(cityData);
-      });
+svgQues09
+  .append("text")
+  .attr("x", widthQ9 - 100)
+  .attr("y", y(dataQues09[dataQues09.length - 1].notHitAndRun) - 10)
+  .attr("text-anchor", "middle")
+  .style("fill", "green")
+  .text("Không bỏ trốn");
 
-      // Sort flatData by total count in descending order
-      flatData.sort((a, b) => b.total - a.total);
-
-      // Set up dimensions
-      var width = 1600;
-      var height = 700;
-      var margin = { top: 250, right: 250, bottom: 30, left: 50 };
-
-      // Remove existing SVG if any
-      d3.select("#chart9 svg").remove();
-
-      // Create SVG
-      var svg = d3
-        .select("#chart9")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-      // Set up scales
-      var x = d3
-        .scaleBand()
-        .domain(flatData.map((d) => d.city))
-        .range([0, width])
-        .padding(0.1);
-
-      var y = d3
-        .scaleLinear()
-        .domain([0, 100])
-       
-        .range([height, 0]);
-
-      var z = d3
-        .scaleOrdinal(d3.schemeCategory10)
-        .domain(Object.keys(flatData[0]).slice(1));
-
-      // Create stack generator
-      var stack = d3
-        .stack()
-        .keys(
-          Object.keys(flatData[0])
-            .slice(1)
-            .filter((key) => key !== "total")
-        )
-        .order(d3.stackOrderNone)
-        .offset(d3.stackOffsetNone);
-
-      var stackedData = stack(flatData);
-
-      // Draw stacked bars
-      svg
-        .selectAll(".stack")
-        .data(stackedData)
-        .enter()
-        .append("g")
-        .attr("class", "stack")
-        .attr("fill", (d) => z(d.key))
-        .selectAll("rect")
-        .data((d) => d)
-        .enter()
-        .append("rect")
-        .attr("x", (d) => x(d.data.city))
-        .attr("y", (d) => y(d[1]))
-        .attr("height", (d) => y(d[0]) - y(d[1]))
-        .attr("width", x.bandwidth())
-        .on("mouseover", function (d, event) {
-          var [x, y] = d3.pointer(event);
-
-          var tooltip = d3
-            .select("#tooltip")
-            .style("opacity", 1)
-            .style("left", x + 10 + "px") // Add 10 pixels offset to avoid covering the mouse
-            .style("top", y - 10 + "px"); // Subtract 10 pixels to position above the mouse
-
-          var barHeight = d.target.__data__[1] - d.target.__data__[0];
-
-          tooltip.html("Accidents: " + Math.abs(barHeight));
-        })
-
-        .on("mouseout", function () {
-          d3.select("#tooltip").style("opacity", 0);
-        });
-
-      // Add labels for total accidents
-     
-      // Draw axes
-      svg
-        .append("g")
-        .attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x));
-
-      svg.append("g").call(d3.axisLeft(y));
-
-      // Add legend
-      var legend = svg
-        .selectAll(".legend")
-        .data(z.domain())
-        .enter()
-        .append("g")
-        .attr("class", "legend")
-        .attr("transform", (d, i) => "translate(0," + i * 20 + ")");
-
-        legend
-        .append("rect")
-        .attr("x", function(d, i) {
-          if (i === 10) return;
-          console.log(i); // Skip appending the rectangle if i equals 11
-          return width - 170;
-        })
-        .attr("y", function(d, i) {
-          if (i === 10) return; // Skip appending the rectangle if i equals 11
-          return height - 950;
-        })
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", function(d, i) {
-          if (i === 10) return "none"; // Set fill to "none" to make it invisible
-          return z(d);
-        });
-        
-      
-      legend
-        .append("text")
-        .attr("x", function(d, i) {
-          if (i === 10) return; // Skip appending the text if i equals 11
-          return width - 181;
-        })
-        .attr("y", function(d, i) {
-          if (i === 10) return; // Skip appending the text if i equals 11
-          return height - 940;
-        })
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d, i) {
-          if (i === 10) return; // Skip setting text if i equals 11
-          return d;
-        });
-      
-
-      // Add tooltip
-      d3.select("#chart9")
-        .append("div")
-        .attr("id", "tooltip")
-        .style("opacity", 0)
-        .attr("class", "tooltip");
-    }
-  })
-  .catch(function (error) {
-    console.error("Error loading the data: " + error);
-  });
-
-// const convertData = (data) => {
-//   // Tạo một đối tượng để lưu trữ số lượng sự cố cho từng loại thời tiết
-//   var countByWeather = {};
-
-//   // Tính số lượng sự cố cho từng loại thời tiết
-//   data.forEach(function(d) {
-//     var key = d["City"];
-//     countByWeather[key] = (countByWeather[key] || 0) + 1;
-//   });
-
-//   // Chuyển đổi đối tượng thành mảng các đối tượng [{weather: key, count: value}]
-//   var countData = Object.keys(countByWeather).map(function(key) {
-//     return { weather: key, count: countByWeather[key] };
-//   });
-
-//   return countData
-// }
+svgQues09
+  .append("text")
+  .attr("x", widthQ9 - 100)
+  .attr("y", y(dataQues09[dataQues09.length - 1].hitAndRun) + 20)
+  .attr("text-anchor", "middle")
+  .style("fill", "blue")
+  .text("Bỏ trốn");

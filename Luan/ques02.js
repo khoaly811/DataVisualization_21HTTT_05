@@ -1,110 +1,97 @@
-const widthQ2 = innerWidth - 100;
-const heightQ2 = innerHeight - 100;
-const radius = Math.min(widthQ2, heightQ2) / 2;
-
+// Load data from CSV file
 d3.csv("Traffic_Accidents.csv").then(function (data) {
-    // Group data by illumination description and count the number of accidents for each description
-    const illuminationDescription = d3.rollup(data, v => v.length, d => d["Illumination Description"]);
+  // Set up SVG dimensions and margins
+  const margin = { top: 60, right: 100, bottom: 150, left: 100 };
+  const width = innerWidth - margin.left - margin.right;
+  const height = innerHeight - margin.top - margin.bottom - 45;
+  console.log(width, height);
 
-    const illuminationDescriptionData = Array.from(illuminationDescription, ([illuminationDescription, value]) => ({ illuminationDescription, value }));
+  // Append SVG to the #chart div
+  const svg = d3
+    .select("#chart2")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right - 100)
+    .attr("height", height + margin.top + margin.bottom - 40)
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // Get top 3 values to visualize, others will be grouped into "Others"
-    const visualizeData = illuminationDescriptionData.sort((a, b) => b.value - a.value).slice(0, 3);
-    const others = illuminationDescriptionData.sort((a, b) => b.value - a.value).slice(3);
-    const othersValue = others.reduce((acc, cur) => acc + cur.value, 0);
-    visualizeData.push({ illuminationDescription: "Others", value: othersValue });
+  // Group data by city and count the number of accidents for each city
+  const accidentsByCity = d3.rollup(
+    data,
+    (v) => v.length,
+    (d) => d.City
+  );
 
-    // Define color scale
-    const color = d3.scaleOrdinal()
-        .domain(visualizeData.map(d => d.illuminationDescription))
-        .range(d3.schemeCategory10);
+  // Convert the map to an array of objects
+  const accidentsData = Array.from(accidentsByCity, ([city, count]) => ({
+    city,
+    count,
+  }));
 
-    // Define arc generator
-    const arc = d3.arc()
-        .innerRadius(0)
-        .outerRadius(radius * 0.8);
+  // Get top 5 value to visualize
+  const visualizeData = accidentsData
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
 
-    // Define pie generator
-    const pie = d3.pie()
-        .sort(null)
-        .value(d => d.value);
+  // Define x and y scales
+  const x = d3
+    .scaleBand()
+    .domain(visualizeData.map((d) => d.city))
+    .range([0, width])
+    .padding(0.5);
 
-    // Draw SVG
-    const svg = d3.select("#chart2").append("svg")
-        .attr("width", widthQ2)
-        .attr("height", heightQ2)
-        .append("g")
-        .attr("transform", `translate(${widthQ2 / 2},${heightQ2 / 2})`);
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(visualizeData, (d) => d.count)])
+    .nice()
+    .range([height, 0]);
 
-    // Draw pie chart
-    const g = svg.selectAll(".arc")
-        .data(pie(visualizeData))
-        .enter().append("g")
-        .attr("class", "arc");
+  // Draw bars
+  svg
+    .selectAll(".bar")
+    .data(visualizeData)
+    .enter()
+    .append("rect")
+    .attr("class", "bar")
+    .style("fill", "steelblue")
+    .attr("x", (d) => x(d.city))
+    .attr("width", x.bandwidth())
+    .attr("y", height)
+    .attr("height", 0)
+    .transition()
+    .duration(1000)
+    .delay((d, i) => i * 100)
+    .attr("y", (d) => y(d.count))
+    .attr("height", (d) => height - y(d.count));
 
-    g.append("path")
-        .attr("d", arc)
-        .style("fill", d => color(d.data.illuminationDescription))
-        .style("stroke", "white")
-        .style("stroke-width", 2);
+  // Draw x-axis
+  svg
+    .append("g")
+    .attr("class", "x-axis")
+    .attr("transform", `translate(0,${height})`)
+    .call(d3.axisBottom(x))
+    .selectAll("text")
+    .style("text-anchor", "center")
+    .style("font-size", "20px")
+    .style("text-transform", "capitalize")
+    .attr("dy", "2rem");
 
-    // Add percentage labels
-    g.append("text")
-        .attr("transform", function (d) {
-            const centroid = arc.centroid(d);
-            return "translate(" + centroid[0] + "," + centroid[1] + ")";
-        })
-        .attr("dy", ".35em")
-        .attr("text-anchor", "middle")
-        .style("fill", "white")
-        .text(function (d) {
-            return ((d.endAngle - d.startAngle) / (2 * Math.PI) * 100).toFixed(1) + "%";
-        });
+  // Draw y-axis
+  svg
+    .append("g")
+    .attr("class", "y-axis")
+    .style("font-size", "20px")
+    .call(d3.axisLeft(y));
 
-    // Add chart title
-    svg.append("text")
-        .attr("x", 0)
-        .attr("y", -heightQ2 / 2 + 20)
-        .attr("text-anchor", "middle")
-        .style("font-size", "20px")
-        .text("Accidents by Illumination Description");
+  // Add chart title
+  svg
+    .append("text")
+    .attr("x", width / 2)
+    .attr("y", 0 - margin.top / 2)
+    .attr("text-anchor", "middle")
+    .style("font-size", "35px")
+    .style("font-weight", "bold")
+    .text("Thống kê 5 thành phố xảy ra nhiều vụ tai nạn nhất");
 
-    // Add legend
-    const legend = svg.selectAll(".legend")
-        .data(visualizeData)
-        .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", (d, i) => `translate(${widthQ2 / 3},${i * 70 - heightQ2 / 2 + 100})`);
-
-    legend.append("rect")
-        .attr("x", -18)
-        .attr("width", 20)
-        .attr("height", 20)
-        .style("fill", d => color(d.illuminationDescription));
-
-    legend.append("text")
-        .attr("x", 10)
-        .attr("y", 9)
-        .attr("dy", ".35em").attr("font-size", "20px")
-        .style("text-anchor", "start")
-        .text(d => d.illuminationDescription);
-
-    // Add tooltip
-    const tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("opacity", 0);
-
-    g.on("mouseover", function (event, d) {
-        tooltip.transition()
-            .duration(200)
-            .style("opacity", .9);
-        tooltip.html(`${d.data.illuminationDescription}: ${d.data.value}`)
-            .style("left", (event.pageX) + "px")
-            .style("top", (event.pageY - 28) + "px");
-    })
-        .on("mouseout", function (d) {
-            tooltip.transition()
-                .duration(500)
-                .style("opacity", 0);
-        });
+  //transition
 });

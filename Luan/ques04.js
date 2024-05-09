@@ -30,9 +30,9 @@ d3.csv("Traffic_Accidents.csv")
     });
 
     // Set up dimensions
-    var width = 1150;
-    var height = 500;
-    var margin = { top: 0, right: 20, bottom: 120, left: 150 };
+    var width = innerWidth - 350;
+    var height = innerHeight - 350;
+    var margin = { top: 100, right: 50, bottom: 120, left: 200 };
 
     // Create SVG
     var svg = d3
@@ -82,9 +82,10 @@ d3.csv("Traffic_Accidents.csv")
       .selectAll("text")
       .attr("dy", ".35em")
       .attr("transform", "rotate(-45)")
-      .style("text-anchor", "end");
+      .style("text-anchor", "end")
+      .style("font-size", "15px");
 
-    svg.append("g").call(d3.axisLeft(y));
+    svg.append("g").call(d3.axisLeft(y)).style("font-size", "15px");
 
     // Add legend
     // Add legend
@@ -92,7 +93,7 @@ d3.csv("Traffic_Accidents.csv")
       .append("g")
       .attr(
         "transform",
-        "translate(" + (width - 280) + "," + (height - 350) + ")"
+        "translate(" + (width - 280) + "," + (height - 550) + ")"
       );
 
     legend
@@ -134,13 +135,21 @@ d3.csv("Traffic_Accidents.csv")
       .style("text-anchor", "middle")
       .text("Illumination Description");
 
+    svg
+      .append("text")
+      .attr("x", width / 2)
+      .attr("y", margin.top - 150)
+      .attr("text-anchor", "middle")
+      .style("font-size", "20px")
+      .text("So sánh tỉ lệ giữa các điều kiện ánh sáng gây ra tai nạn ");
+
     // Create SVG for bubble size legend
     var legendSvg = svg
       .append("g")
       .attr("class", "legendSize")
       .attr(
         "transform",
-        "translate(" + (width - 180) + "," + (height - 400) + ")"
+        "translate(" + (width - 180) + "," + (height - 600) + ")"
       );
 
     // Define the bubble sizes for the legend

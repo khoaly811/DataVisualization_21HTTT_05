@@ -3,8 +3,8 @@ const duration = 1000; // Changed to 3 seconds
 const barSize = 48;
 const marginTopQ5 = 30;
 const marginRightQ5 = 150;
-const widthQ5 = 800; // Define the width of the SVG
-const heightQ5 = 600; // Define the height of the SVG
+const widthQ5 = innerWidth - 50; // Define the width of the SVG
+const heightQ5 = innerHeight - 200; // Define the height of the SVG
 const n = 8; // Number of precincts
 
 let data; // Define data variable globally
@@ -90,7 +90,7 @@ function loadDataAndInitializeRace() {
     const colorScale = d3
       .scaleOrdinal(d3.schemeCategory10)
       .domain(nestedData2015.map((d) => d.Precinct))
-      .range(d3.schemeCategory10.map(color => d3.color(color).brighter(0.8)));
+      .range(d3.schemeCategory10.map((color) => d3.color(color).brighter(0.8)));
     // Define scales
 
     xScale = d3
@@ -105,6 +105,7 @@ function loadDataAndInitializeRace() {
       .padding(0.3);
     const xAxis = d3.axisBottom(xScale).ticks(5).tickSizeOuter(0);
     const yAxis = d3.axisLeft(yScale).tickSize(0).tickPadding(30);
+
     // Create SVG
     const svgQ5 = d3
       .select("#chart5")
@@ -122,6 +123,7 @@ function loadDataAndInitializeRace() {
       .attr("dominant-baseline", "hanging")
       .attr("font-size", "24px")
       .text("");
+
     // Define initial bars
     bars = svgQ5
       .selectAll(".bar")
@@ -160,12 +162,15 @@ function loadDataAndInitializeRace() {
       .style("stroke", "lightgray")
       .style("stroke-width", 0.5)
       .style("stroke-dasharray", "3 3");
+
     svgQ5
       .append("g")
       .attr("class", "x axis")
       .attr("transform", `translate(${marginTopQ5}, ${heightQ5 - marginTopQ5})`)
       .call(xAxis)
-      .call((g) => g.select(".domain").remove());
+      .call((g) => g.select(".domain").remove())
+      .style("font-size", "15px");
+
     svgQ5
       .append("g")
       .attr("class", "y-axis")
@@ -175,6 +180,7 @@ function loadDataAndInitializeRace() {
       .style("stroke-width", "1.75px")
       .attr("y1", marginTopQ5) // Adjust y1 to fit right at the 0 y-axis
       .attr("y2", heightQ5 - marginTopQ5);
+
     svgQ5.selectAll(".yAxis.axis .tick text").text(function (d) {
       return d.toUpperCase();
     });

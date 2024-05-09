@@ -33,8 +33,8 @@ d3.csv("Traffic_Accidents.csv")
     flatData.sort((a, b) => a.year - b.year || a.quarter - b.quarter);
 
     // Set up dimensions
-    var width = 1300;
-    var height = 600;
+    var width = innerWidth - 200;
+    var height = innerHeight - 200;
     var margin = { top: 20, right: 20, bottom: 30, left: 50 };
 
     // Create SVG
@@ -52,14 +52,7 @@ d3.csv("Traffic_Accidents.csv")
       .domain(d3.extent(flatData, (d) => new Date(d.year, d.quarter, 1)))
       .range([0, width]);
 
-    var y = d3
-      .scaleLinear()
-      .domain([
-        0,
-        9000,
-      ])
-      .nice()
-      .range([height, 0]);
+    var y = d3.scaleLinear().domain([0, 9000]).nice().range([height, 0]);
 
     var z = d3
       .scaleOrdinal(d3.schemeCategory10)
@@ -73,7 +66,6 @@ d3.csv("Traffic_Accidents.csv")
 
     var stackedData = stack(flatData);
 
-    // Draw stacked area
     // Draw stacked area
     svg
       .selectAll(".area")
@@ -111,23 +103,23 @@ d3.csv("Traffic_Accidents.csv")
 
     // Draw axes
     svg
-    .append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(
-      d3
-        .axisBottom(x)
-        .ticks(d3.timeMonth.every(3))
-        .tickFormat(function (date) {
-          if (date.getMonth() === 0) {
-            return d3.timeFormat("%Y")(date);
-          }
-          return d3.timeFormat("%m")(date);
-        })
-    ).attr("font-size", "13px")  // Set font size
-    .attr("font-weight", "400"); // Set font weight
-  
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(
+        d3
+          .axisBottom(x)
+          .ticks(d3.timeMonth.every(3))
+          .tickFormat(function (date) {
+            if (date.getMonth() === 0) {
+              return d3.timeFormat("%Y")(date);
+            }
+            return d3.timeFormat("%m")(date);
+          })
+      )
+      .attr("font-size", "15px") // Set font size
+      .attr("font-weight", "400"); // Set font weight
 
-    svg.append("g").call(d3.axisLeft(y));
+    svg.append("g").call(d3.axisLeft(y)).style("font-size", "15px");
 
     // Add legend
     var legend = svg
