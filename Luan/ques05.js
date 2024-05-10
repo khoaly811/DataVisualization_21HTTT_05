@@ -2,7 +2,7 @@
 const duration = 1000; // Changed to 3 seconds
 const barSize = 48;
 const marginTopQ5 = 30;
-const marginRightQ5 = 150;
+const marginRightQ5 = 200;
 const widthQ5 = innerWidth - 50; // Define the width of the SVG
 const heightQ5 = innerHeight - 200; // Define the height of the SVG
 const n = 8; // Number of precincts

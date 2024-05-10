@@ -108,5 +108,5 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("y", margin.top / 2)
     .attr("text-anchor", "middle")
     .style("font-size", "20px")
-    .text("So sánh tỉ lệ giữa các điều kiện ánh sáng gây ra tai nạn ");
+    .text("Hãy cho biết sự tương quan giữa mức độ va chạm với số người thương vong trong các vụ tai nạn");
 });

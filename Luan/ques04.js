@@ -141,7 +141,7 @@ d3.csv("Traffic_Accidents.csv")
       .attr("y", margin.top - 150)
       .attr("text-anchor", "middle")
       .style("font-size", "20px")
-      .text("So sánh tỉ lệ giữa các điều kiện ánh sáng gây ra tai nạn ");
+      .text("Hãy cho biết sự tương quan giữa thời tiết và điều kiện ánh sáng đến số người thương vong trong các vụ tai nạn");
 
     // Create SVG for bubble size legend
     var legendSvg = svg

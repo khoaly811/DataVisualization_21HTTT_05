@@ -88,7 +88,7 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("y", -height / 2 + 20)
     .attr("text-anchor", "middle")
     .style("font-size", "20px")
-    .text("So sánh tỉ lệ giữa các điều kiện ánh sáng gây ra tai nạn ");
+    .text("So sánh tỉ lệ giữa các điều kiện ánh sáng xung quanh mà gây ra tai nạn ");
 
   // Add legend
   const legend = svg

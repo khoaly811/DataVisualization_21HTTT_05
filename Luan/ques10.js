@@ -27,7 +27,7 @@ const dataQues10 = [
 ];
 
 // Kích thước của biểu đồ và margin
-const margin = { top: 20, right: 20, bottom: 30, left: 60 };
+const margin = { top: 50, right: 80, bottom: 30, left: 60 };
 const width = innerWidth - margin.left - margin.right - 100;
 const height = innerHeight - margin.top - margin.bottom - 120;
 
