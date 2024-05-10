@@ -75,7 +75,7 @@ d3.csv("Traffic_Accidents.csv")
       // Set up dimensions
       var width = innerWidth - 250;
       var height = innerHeight - 250;
-      var margin = { top: 300, right: 200, bottom: 30, left: 50 };
+      var margin = { top: 270, right: 200, bottom: 20, left: 50 };
 
       // Remove existing SVG if any
       d3.select("#chart8 svg").remove();
@@ -93,7 +93,7 @@ d3.csv("Traffic_Accidents.csv")
       var x = d3
         .scaleBand()
         .domain(flatData.map((d) => d.city))
-        .range([0, width])
+        .range([0, width + 150])
         .padding(0.1);
 
       var y = d3
@@ -160,7 +160,7 @@ d3.csv("Traffic_Accidents.csv")
         .append("g")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.axisBottom(x))
-        .style("font-size", "15px");
+        .style("font-size", "10px"); // size of word
 
       svg.append("g").call(d3.axisLeft(y)).style("font-size", "15px");
 
@@ -182,7 +182,7 @@ d3.csv("Traffic_Accidents.csv")
         })
         .attr("y", function (d, i) {
           if (i === 10) return; // Skip appending the rectangle if i equals 11
-          return height - 1000;
+          return height - 700;
         })
         .attr("width", 18)
         .attr("height", 18)
@@ -199,7 +199,7 @@ d3.csv("Traffic_Accidents.csv")
         })
         .attr("y", function (d, i) {
           if (i === 10) return; // Skip appending the text if i equals 11
-          return height - 990;
+          return height - 690;
         })
         .attr("dy", ".35em")
         .style("text-anchor", "end")

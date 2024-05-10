@@ -31,8 +31,8 @@ d3.csv("Traffic_Accidents.csv")
 
     // Set up dimensions
     var width = innerWidth - 350;
-    var height = innerHeight - 350;
-    var margin = { top: 100, right: 50, bottom: 120, left: 200 };
+    var height = innerHeight - 50;
+    var margin = { top: 100, right: 50, bottom: 150, left: 200 };
 
     // Create SVG
     var svg = d3

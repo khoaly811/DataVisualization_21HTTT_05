@@ -68,7 +68,7 @@ svgQues10
 // Thêm trục x
 svgQues10
   .append("g")
-  .attr("transform", `translate(3,${height - margin.bottom})`)
+  .attr("transform", `translate(10,${height - margin.bottom})`)
   .call(
     d3
       .axisBottom(xQues10)
