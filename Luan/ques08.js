@@ -137,7 +137,8 @@ d3.csv("Traffic_Accidents.csv")
         .attr("width", x.bandwidth())
         .on("mouseover", function (d, event) {
           var [x, y] = d3.pointer(event);
-
+          console.log(x);
+          console.log(x);
           var tooltip = d3
             .select("#tooltip")
             .style("opacity", 1)

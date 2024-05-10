@@ -21,7 +21,8 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
           d["Collision Type Description"] === collisionType &&
           +d["Number of Injuries"] === injury
       );
-      const totalAccidents = d3.sum(filteredData, (d) => +d["Accident Number"]);
+      const totalAccidents = filteredData.length;
+
       nestedData.push({ collisionType, injury, totalAccidents });
     });
   });
@@ -58,16 +59,42 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .attr("height", height);
 
   // Draw rectangles
-  svgQ3
-    .selectAll("rect")
-    .data(nestedData)
-    .enter()
-    .append("rect")
-    .attr("x", (d) => xScale(d.collisionType))
-    .attr("y", (d) => yScale(d.injury))
-    .attr("width", xScale.bandwidth())
-    .attr("height", yScale.bandwidth())
-    .attr("fill", (d) => colorScale(d.totalAccidents));
+  // Draw rectangles
+  const rects = svgQ3
+  .selectAll("rect")
+  .data(nestedData)
+  .enter()
+  .append("rect")
+  .attr("x", (d) => xScale(d.collisionType))
+  .attr("y", (d) => yScale(d.injury))
+  .attr("width", xScale.bandwidth())
+  .attr("height", yScale.bandwidth())
+  .attr("fill", (d) => colorScale(d.totalAccidents));
+
+  const tooltip = d3.select("body").append("div")
+  .attr("id", "tooltip")
+  .style("opacity", 0);
+// Tooltip
+rects.on("mouseover", function(d) {
+    const x = 100;
+    const y = 10;
+    tooltip.transition()
+      .duration(200)
+      .style("opacity", 1)
+      .style("left", x + 10 + "px")
+      .style("top", y - 10 + "px");
+      console.log(d);
+    tooltip.html(
+      "Collision Type: " + d.srcElement.__data__.collisionType
+      + "<br>Injuries: " + d.srcElement.__data__.injury + "<br>Total Accidents: " + d.srcElement.__data__.totalAccidents
+    );
+  })
+  .on("mouseout", function(d) {
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+  });
+
 
   // Add labels
   svgQ3
