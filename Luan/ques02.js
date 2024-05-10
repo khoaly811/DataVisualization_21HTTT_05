@@ -63,7 +63,17 @@ d3.csv("Traffic_Accidents.csv").then(function (data) {
     .delay((d, i) => i * 100)
     .attr("y", (d) => y(d.count))
     .attr("height", (d) => height - y(d.count));
-
+    svg
+    .selectAll(".label")
+    .data(visualizeData)
+    .enter()
+    .append("text")
+    .attr("class", "label")
+    .attr("x", (d) => x(d.city) + x.bandwidth() / 2)
+    .attr("y", (d) => y(d.count) - 5) // Adjust positioning as needed
+    .attr("text-anchor", "middle")
+    .style("font-size", "14px")
+    .text((d) => d.count);
   // Draw x-axis
   svg
     .append("g")

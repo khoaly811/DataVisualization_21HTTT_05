@@ -183,7 +183,7 @@ d3.csv("Traffic_Accidents.csv")
         })
         .attr("y", function (d, i) {
           if (i === 10) return; // Skip appending the rectangle if i equals 11
-          return height - 700;
+          return height - 900;
         })
         .attr("width", 18)
         .attr("height", 18)
@@ -200,7 +200,7 @@ d3.csv("Traffic_Accidents.csv")
         })
         .attr("y", function (d, i) {
           if (i === 10) return; // Skip appending the text if i equals 11
-          return height - 690;
+          return height - 890;
         })
         .attr("dy", ".35em")
         .style("text-anchor", "end")

@@ -155,7 +155,6 @@ d3.csv("Traffic_Accidents.csv")
       .attr("text-anchor", "middle")
       .attr("fill", "black")
       .text((d) => d.injuries);
-
     svg
       .selectAll(".dot")
       .data(flatInjuriesData)
